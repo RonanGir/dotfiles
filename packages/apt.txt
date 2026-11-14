@@ -1,0 +1,18 @@
+# Linux / WSL (Debian, Ubuntu) : sudo apt-get install -y $(grep -v '^#' packages/apt.txt)
+# Non couverts par apt : nvm et sdkman (scripts d'installation officiels),
+# Docker (Docker Desktop côté Windows avec l'intégration WSL activée), VS Code (côté Windows).
+
+# Dev
+git
+curl
+zip
+unzip
+build-essential
+
+# Shell
+zsh
+zsh-syntax-highlighting
+zsh-autosuggestions
+
+# Outils
+rclone

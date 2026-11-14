@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-# Installe les dotfiles : mac (zsh, MacPorts ou Homebrew) ou Windows (Git Bash, Scoop).
+# Installe les dotfiles : mac (zsh, MacPorts ou Homebrew), Windows (Git Bash, Scoop) ou Linux/WSL (apt).
 # Usage : ./install.sh [--packages]
-# Workspace : ~/workspace (mac) ou C:/workspace (Windows), avec work/ et perso/. Surcharge : WORKSPACE=D:/dev
+# Workspace : ~/workspace (mac, Linux/WSL) ou C:/workspace (Windows), avec work/ et perso/. Surcharge : WORKSPACE=D:/dev
+# WSL : le workspace vit dans le système de fichiers Linux (~/workspace), pas sous /mnt/c (bien plus rapide).
 set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_PACKAGES=0; [ "${1:-}" = "--packages" ] && INSTALL_PACKAGES=1
+IS_WSL=0
 
 case "$(uname -s)" in
   Darwin)               OS=mac;     RC="$HOME/.zshrc"; WS="${WORKSPACE:-$HOME/workspace}"; WS_SH="$WS" ;;
+  Linux)                OS=linux;   WS="${WORKSPACE:-$HOME/workspace}"; WS_SH="$WS"
+                        grep -qi microsoft /proc/version 2>/dev/null && IS_WSL=1
+                        case "${SHELL##*/}" in zsh) RC="$HOME/.zshrc" ;; *) RC="$HOME/.bashrc" ;; esac ;;
   MINGW*|MSYS*|CYGWIN*) OS=windows; RC="$HOME/.bashrc"; DIR="$(cd "$DIR" && pwd -W)"
                         WS="${WORKSPACE:-C:/workspace}"; WS_SH="/$(echo "${WS%%:*}" | tr A-Z a-z)${WS#*:}" ;;  # C:/x -> /c/x
   *) echo "OS non supporté: $(uname -s)" >&2; exit 1 ;;
@@ -20,11 +25,13 @@ TARGET="$HOME/.gitconfig"
 if [ -f "$TARGET" ] && ! grep -q "dotfiles-managed" "$TARGET"; then
   cp "$TARGET" "$TARGET.bak.$(date +%Y%m%d%H%M%S)"; echo "Ancien .gitconfig sauvegardé."
 fi
+WSL_INC=""; [ "$IS_WSL" = 1 ] && WSL_INC="	path = $DIR/git/gitconfig.wsl"
 cat > "$TARGET" <<CFG
 # dotfiles-managed : généré par install.sh, ne pas éditer (modifier le repo).
 [include]
 	path = $DIR/git/gitconfig
 	path = $DIR/git/gitconfig.$OS
+$WSL_INC
 	path = $DIR/git/gitconfig.perso
 # Identité de travail : uniquement pour les repos sous $WORK_DIR
 [includeIf "gitdir/i:$WORK_DIR/"]
@@ -46,7 +53,7 @@ if [ -d "$DIR/.git" ]; then git -C "$DIR" config core.hooksPath hooks; fi
 link_rule() {
   [ -e "$2" ] && { echo "Déjà présent, ignoré : $2"; return; }
   mkdir -p "$(dirname "$2")"
-  if [ "$OS" = mac ]; then ln -s "$DIR/ai/rules.md" "$2"; else cp "$DIR/ai/rules.md" "$2"; fi
+  if [ "$OS" = windows ]; then cp "$DIR/ai/rules.md" "$2"; else ln -s "$DIR/ai/rules.md" "$2"; fi
 }
 link_rule x "$HOME/.claude/CLAUDE.md"
 link_rule x "$HOME/.config/opencode/AGENTS.md"
@@ -60,9 +67,9 @@ add_source "$DIR/shell/dev_aliases.sh"
 add_source "$DIR/shell/jetbrains_path.sh"
 [ "$OS" = windows ] && add_source "$DIR/shell/bash_prompt.sh"
 
-# --- VS Code ---
+# --- VS Code (pas sous Linux/WSL : les réglages sont gérés côté Windows, via Remote - WSL) ---
 if [ "$OS" = mac ]; then VSC="$HOME/Library/Application Support/Code/User"; else VSC="${APPDATA:-}/Code/User"; fi
-if [ -d "$(dirname "$VSC")" ]; then
+if [ "$OS" != linux ] && [ -d "$(dirname "$VSC")" ]; then
   mkdir -p "$VSC"
   [ -f "$VSC/settings.json" ] && [ ! -L "$VSC/settings.json" ] && cp "$VSC/settings.json" "$VSC/settings.json.bak"
   if [ "$OS" = mac ]; then ln -sf "$DIR/vscode/settings.json" "$VSC/settings.json"
@@ -82,6 +89,12 @@ if [ "$INSTALL_PACKAGES" = 1 ]; then
     else
       echo "Scoop absent. Dans PowerShell (sans admin) : irm get.scoop.sh | iex   puis relancez --packages" >&2
     fi
+  elif [ "$OS" = linux ]; then
+    if command -v apt-get >/dev/null; then
+      grep -v '^#' "$DIR/packages/apt.txt" | sed '/^$/d' | xargs sudo apt-get install -y
+    else
+      echo "apt-get absent : installez à la main les paquets de packages/apt.txt." >&2
+    fi
   elif command -v brew >/dev/null; then
     brew bundle --file="$DIR/packages/Brewfile"
   elif command -v port >/dev/null; then
@@ -92,5 +105,6 @@ if [ "$INSTALL_PACKAGES" = 1 ]; then
 fi
 
 echo "OK ($OS) : $TARGET et $RC configurés."
-[ "$OS" = mac ] && echo "Zsh : sourcez shell/zsh_setup.zsh avant oh-my-zsh et shell/zsh_plugins_end.zsh en dernière ligne de ~/.zshrc."
+[ "$RC" = "$HOME/.zshrc" ] && echo "Zsh : sourcez shell/zsh_setup.zsh avant oh-my-zsh et shell/zsh_plugins_end.zsh en dernière ligne de ~/.zshrc."
+[ "$IS_WSL" = 1 ] && echo "WSL : ajoutez votre clé SSH dans ce WSL (~/.ssh, ssh/config.example) ; Git Credential Manager doit être installé côté Windows."
 exit 0

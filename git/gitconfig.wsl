@@ -1,0 +1,4 @@
+# Spécifique WSL : réutilise Git Credential Manager installé côté Windows (Git for Windows).
+# Chemin par défaut ; à surcharger dans ~/.gitconfig.local si Git est installé ailleurs.
+[credential]
+	helper = "/mnt/c/Program Files/Git/mingw64/bin/git-credential-manager.exe"

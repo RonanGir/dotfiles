@@ -1,0 +1,4 @@
+# Spécifique Linux (dont WSL)
+[core]
+	editor = nano
+	autocrlf = input
