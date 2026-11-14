@@ -68,7 +68,7 @@ if [ -d "$(dirname "$VSC")" ]; then
   if [ "$OS" = mac ]; then ln -sf "$DIR/vscode/settings.json" "$VSC/settings.json"
   else cp "$DIR/vscode/settings.json" "$VSC/settings.json"; fi
   if command -v code >/dev/null; then
-    grep -v '^#' "$DIR/vscode/extensions.txt" | while read -r e; do [ -n "$e" ] && code --install-extension "$e" --force >/dev/null; done
+    grep -v '^#' "$DIR/vscode/extensions.txt" | while read -r e; do [ -n "$e" ] && { code --install-extension "$e" --force >/dev/null 2>&1 || echo "Extension ignorée (échec) : $e" >&2; }; done
   fi
 fi
 

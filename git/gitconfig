@@ -48,5 +48,3 @@
 [mergetool "intellij"]
 	cmd = idea merge \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
 	trustExitCode = true
-[hub]
-	protocol = https

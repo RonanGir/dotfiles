@@ -1,9 +1,35 @@
 # Machine Homebrew : brew bundle --file=packages/Brewfile
+tap "sdkman/tap"
+
+# Dev
 brew "git"
 brew "nvm"
+brew "sdkman/tap/sdkman-cli"
+
+# Conteneurs (Colima à la place de Docker Desktop)
+brew "colima"
+brew "docker"
+brew "docker-buildx"
+brew "docker-compose"
+
+# Shell
 brew "zsh-syntax-highlighting"
+brew "zsh-autosuggestions"
+
+# Outils
+brew "ollama"
+brew "mole"
 # brew "sst/tap/opencode"   # à vérifier selon votre installation
+
+# Applications
 cask "visual-studio-code"
 cask "sublime-text"
 cask "jetbrains-toolbox"
 cask "obsidian"
+cask "rectangle"
+cask "stats"
+cask "hot"
+cask "aldente"
+cask "betterdisplay"
+cask "coconutbattery"
+cask "disk-inventory-x"

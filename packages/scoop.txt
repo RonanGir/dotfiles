@@ -1,7 +1,24 @@
 # Windows, sans droits admin. Lignes "bucket <nom>" puis une appli par ligne.
+# Équivalent du Brewfile. Pas d'équivalent Windows pour colima, sdkman, rectangle, stats, hot,
+# aldente, betterdisplay, coconutbattery (macOS uniquement).
 bucket extras
+
+# Dev
 git
 nvm
+
+# Conteneurs
+docker
+docker-compose
+docker-buildx
+
+# Outils
+ollama
+opencode
+rclone
+windirstat
+
+# Applications
 vscode
 sublime-text
 obsidian
