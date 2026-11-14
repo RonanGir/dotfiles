@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Bloque un commit contenant un secret probable.
+if git diff --cached -U0 -- . ':!hooks/pre-commit' | grep -E '^\+' | grep -qiE 'ghp_[A-Za-z0-9]{20,}|github_pat_|AKIA[0-9A-Z]{16}|BEGIN [A-Z ]*PRIVATE KEY|(password|passwd|secret|token|api[_-]?key)[[:space:]]*[=:][[:space:]]*[^[:space:]]+'; then
+  echo "Commit bloqué : secret probable détecté dans les changements indexés." >&2
+  exit 1
+fi

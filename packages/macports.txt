@@ -1,0 +1,11 @@
+# Ports installés manuellement (sudo port install $(grep -v '^#' packages/macports.txt))
+docker
+docker-compose
+git +credential_osxkeychain +diff_highlight +doc +pcre +perl5_34
+nvm
+ollama +completion
+opencode
+rclone
+zsh
+zsh-syntax-highlighting
+mole-cleaner

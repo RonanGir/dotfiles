@@ -1,0 +1,9 @@
+# Machine Homebrew : brew bundle --file=packages/Brewfile
+brew "git"
+brew "nvm"
+brew "zsh-syntax-highlighting"
+# brew "sst/tap/opencode"   # à vérifier selon votre installation
+cask "visual-studio-code"
+cask "sublime-text"
+cask "jetbrains-toolbox"
+cask "obsidian"

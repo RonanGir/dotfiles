@@ -1,0 +1,52 @@
+# Config git commune (mac + windows). Chargée via ~/.gitconfig par install.sh.
+# L'identité est dans gitconfig.perso (défaut) et ~/.gitconfig.work (dossier work/).
+[init]
+	defaultBranch = main
+[push]
+	default = simple
+	autoSetupRemote = true
+[pull]
+	rebase = true
+[fetch]
+	prune = true
+[rerere]
+	enabled = true
+[help]
+	autocorrect = 1
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+	ui = auto
+[color "branch"]
+	current = green
+	remote = yellow
+[alias]
+	co = checkout
+	st = status -sb
+	br = branch
+	ci = commit
+	fo = fetch origin
+	d = !git --no-pager diff
+	dt = difftool
+	stat = !git --no-pager diff --stat
+	ri = rebase -i
+	lg = log --graph --oneline --decorate --all
+	clean-blame = blame -w -C -C -C
+[diff]
+	tool = intellij
+[difftool]
+	prompt = false
+[difftool "intellij"]
+	cmd = idea diff \"$LOCAL\" \"$REMOTE\"
+[merge]
+	tool = intellij
+[mergetool]
+	prompt = false
+	keepBackup = false
+[mergetool "intellij"]
+	cmd = idea merge \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+	trustExitCode = true
+[hub]
+	protocol = https

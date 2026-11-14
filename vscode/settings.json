@@ -1,0 +1,18 @@
+{
+    "todo-tree.tree.showScanModeButton": false,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "workbench.iconTheme": "vscode-icons",
+    "java.project.importOnFirstTimeStartup": "automatic",
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "java.semanticHighlighting.enabled": true,
+    "nativescript.analytics.enabled": false,
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "workbench.colorTheme": "Calmppuccin Latte",
+    "security.workspace.trust.untrustedFiles": "open"
+}

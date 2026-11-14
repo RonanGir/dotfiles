@@ -1,0 +1,8 @@
+# Windows, sans droits admin. Lignes "bucket <nom>" puis une appli par ligne.
+bucket extras
+git
+nvm
+vscode
+sublime-text
+obsidian
+jetbrains-toolbox

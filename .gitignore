@@ -1,0 +1,18 @@
+# Jamais de secrets ni de config propre à une machine dans ce repo
+.gitconfig.local
+.gitconfig.work
+*.bak
+*.bak.*
+.env
+.env.*
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+*.p12
+*.pfx
+.netrc
+.npmrc
+.git-credentials
+credentials*
+secrets*

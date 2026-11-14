@@ -1,0 +1,26 @@
+# Thèmes
+catppuccin.catppuccin-vsc
+kenan-salar.calmppuccin-vscode
+vscode-icons-team.vscode-icons
+# Java / Spring
+redhat.java
+vscjava.vscode-java-pack
+vscjava.vscode-java-debug
+vscjava.vscode-java-dependency
+vscjava.vscode-java-test
+vscjava.vscode-maven
+vscjava.vscode-gradle
+vscjava.vscode-spring-boot-dashboard
+vscjava.vscode-spring-initializr
+vmware.vscode-spring-boot
+shengchen.vscode-checkstyle
+sonarsource.sonarlint-vscode
+# Angular / JS
+johnpapa.angular2
+esbenp.prettier-vscode
+# IA
+github.copilot
+github.copilot-chat
+# Divers
+gruntfuggly.todo-tree
+visualstudioexptteam.vscodeintellicode

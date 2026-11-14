@@ -1,0 +1,6 @@
+# Spécifique Windows (Git Bash)
+[core]
+	editor = code --wait
+	autocrlf = true
+[credential]
+	helper = manager

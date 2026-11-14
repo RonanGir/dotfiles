@@ -1,0 +1,6 @@
+# Spécifique macOS (zsh)
+[core]
+	editor = code --wait
+	autocrlf = input
+[credential]
+	helper = osxkeychain
