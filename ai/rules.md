@@ -8,12 +8,12 @@
 - macOS (zsh) et Windows (Git Bash) : écrire des scripts portables, sans droits admin si possible.
 - Éditeur : VS Code (git, rebase). IDE : IntelliJ via JetBrains Toolbox.
 - Stack habituelle : Java / Spring Boot (Maven, Gradle), Angular / Node (nvm), Docker.
-- Workspace : `~/workspace` (mac) ou `C:/workspace` (Windows), avec `work/` et `perso/`.
+- Workspace : `~/workspaces` (mac, Linux/WSL) ou `C:/workspaces` (Windows), avec `pro/` et `perso/`.
 
 ## Git
 - Branche par défaut : `main`. Pull en rebase.
 - Ne jamais commit ni push sans demande explicite.
-- Ne pas mélanger identité pro et perso : l'identité dépend du dossier (`work/` vs `perso/`).
+- Ne pas mélanger identité pro et perso : l'identité dépend du dossier (`pro/` vs `perso/`).
 
 ## Sécurité
 - Jamais de credentials, tokens, clés ni emails pro dans un repo ou un fichier versionné.

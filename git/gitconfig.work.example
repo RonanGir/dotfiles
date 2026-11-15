@@ -1,5 +1,5 @@
 # Modèle d'identité de travail. install.sh le copie vers ~/.gitconfig.work (non versionné)
-# si absent : renseignez-y votre nom et email pro. Appliqué uniquement dans WORK_DIR.
+# si absent : renseignez-y votre nom et email pro. Appliqué uniquement dans PRO_DIR.
 [user]
 	name = CHANGEME
 	email = CHANGEME@entreprise.com

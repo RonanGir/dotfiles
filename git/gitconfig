@@ -1,5 +1,5 @@
 # Config git commune (mac + windows). Chargée via ~/.gitconfig par install.sh.
-# L'identité est dans gitconfig.perso (défaut) et ~/.gitconfig.work (dossier work/).
+# L'identité est dans gitconfig.perso (défaut) et ~/.gitconfig.work (dossier pro/).
 [init]
 	defaultBranch = main
 [push]
