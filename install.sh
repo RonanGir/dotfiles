@@ -20,6 +20,28 @@ case "$(uname -s)" in
 esac
 PRO_DIR="${PRO_DIR:-$WS/pro}"   # chemin natif (C:/... sous Windows), lu par git
 
+# --- WSL : ~/.wslconfig est dans le profil Windows, pas dans le home Linux ---
+install_wsl_config() {
+  local target=""
+  if [ "$OS" = windows ]; then
+    target="$HOME/.wslconfig"
+  elif [ "$IS_WSL" = 1 ] && command -v cmd.exe >/dev/null 2>&1 && command -v wslpath >/dev/null 2>&1; then
+    local windows_home
+    windows_home="$(cmd.exe /C echo %USERPROFILE% 2>/dev/null | tr -d '\r')"
+    [ -n "$windows_home" ] && target="$(wslpath "$windows_home")/.wslconfig"
+  fi
+  [ -n "$target" ] || return 0
+
+  if [ -f "$target" ] && ! cmp -s "$DIR/wsl/.wslconfig" "$target"; then
+    cp "$target" "$target.bak.$(date +%Y%m%d%H%M%S)"
+    echo "Ancien .wslconfig sauvegardé."
+  fi
+  mkdir -p "$(dirname "$target")"
+  cp "$DIR/wsl/.wslconfig" "$target"
+  echo "Configuration WSL installée : $target"
+}
+install_wsl_config
+
 # --- Git : ~/.gitconfig = includes vers le repo (le dernier gagne) ---
 TARGET="$HOME/.gitconfig"
 if [ -f "$TARGET" ] && ! grep -q "dotfiles-managed" "$TARGET"; then

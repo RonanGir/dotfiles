@@ -11,7 +11,11 @@ SRC="${INSTALL_SRC:-$ROOT/install.sh}"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 IS_WIN=0
-case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) IS_WIN=1 ;; esac
+EXPECT_WSL=0
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) IS_WIN=1 ;;
+  Linux) grep -qi microsoft /proc/version 2>/dev/null && EXPECT_WSL=1 ;;
+esac
 
 pass() { echo "ok   : $*"; }
 fail() { echo "FAIL : $*" >&2; exit 1; }
@@ -22,12 +26,24 @@ native() { if [ "$IS_WIN" = 1 ]; then (cd "$1" && pwd -W); else (cd "$1" && pwd)
 # Dépôt jetable : install.sh + fichiers existants (contenu non lu par install.sh) + .git vide
 # (install.sh ne pose core.hooksPath que si $DIR/.git existe ; seul .git/config du jetable est écrit)
 REPO="$TMP/repo"
-mkdir -p "$REPO/git" "$REPO/ai" "$REPO/shell"
+mkdir -p "$REPO/git" "$REPO/ai" "$REPO/shell" "$REPO/wsl" "$TMP/bin"
 cp "$SRC" "$REPO/install.sh"
 : > "$REPO/git/gitconfig.work.example"; : > "$REPO/ai/rules.md"
+printf 'test-wsl-config\n' > "$REPO/wsl/.wslconfig"
 for f in git_aliases.sh dev_aliases.sh jetbrains_path.sh bash_prompt.sh; do : > "$REPO/shell/$f"; done
 git init -q "$REPO"
 WS="$(native "$TMP")/ws"
+
+# Évite que le test WSL utilise le vrai profil Windows de la machine.
+cat > "$TMP/bin/cmd.exe" <<EOF
+#!/usr/bin/env bash
+printf '%s\\r\\n' '$TMP/windows'
+EOF
+cat > "$TMP/bin/wslpath" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\n' "$1"
+EOF
+chmod +x "$TMP/bin/cmd.exe" "$TMP/bin/wslpath"
 
 # core.hooksPath doit valoir hooks dans le dépôt jetable après chaque installation
 check_hooks() {
@@ -37,10 +53,14 @@ check_hooks() {
 
 # Lance install.sh avec HOME/APPDATA/WORKSPACE isolés : $1 = HOME, $2 = nom de la passe
 run_install() {
-  if ! HOME="$1" APPDATA=/nonexistent WORKSPACE="$WS" bash "$REPO/install.sh" > "$TMP/$2.log" 2>&1; then
+  if ! PATH="$TMP/bin:$PATH" HOME="$1" APPDATA=/nonexistent WORKSPACE="$WS" bash "$REPO/install.sh" > "$TMP/$2.log" 2>&1; then
     cat "$TMP/$2.log" >&2; fail "install.sh a échoué ($2)"
   fi
   check_hooks "$2"
+  if [ "$IS_WIN" = 1 ] || [ "$EXPECT_WSL" = 1 ]; then
+    [ "$(cat "$TMP/windows/.wslconfig")" = "test-wsl-config" ] \
+      && pass "$2 : .wslconfig installé" || fail "$2 : .wslconfig absent ou différent"
+  fi
 }
 
 # Nombre de lignes de $1 contenant $2 (casse ignorée)

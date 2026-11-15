@@ -1,0 +1,18 @@
+[wsl2]
+# Mode réseau moderne (partage d'IP avec Windows)
+networkingMode=Mirrored
+
+# Recommandé avec le mode Mirrored (évite les coupures réseau/VPN)
+dnsTunneling=true
+
+# Applique les règles du pare-feu Windows à WSL
+firewall=true
+
+# Désactive le swap (Attention : si vos projets saturent votre RAM, WSL peut crasher)
+swap=0
+
+# Temps avant que la VM ne s'arrête en cas d'inactivité (14400000 ms = 4 heures)
+vmIdleTimeout=14400000
+
+[experimental]
+hostAddressLoopback=true

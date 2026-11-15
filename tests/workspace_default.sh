@@ -63,15 +63,24 @@ else
 
   # Dépôt jetable : install.sh + fichiers existants (contenu non lu par install.sh) + .git vide
   REPO="$TMP/repo"
-  mkdir -p "$REPO/git" "$REPO/ai" "$REPO/shell"
+  mkdir -p "$REPO/git" "$REPO/ai" "$REPO/shell" "$REPO/wsl" "$TMP/bin"
   cp "$SRC" "$REPO/install.sh"
-  : > "$REPO/git/gitconfig.work.example"; : > "$REPO/ai/rules.md"
+  : > "$REPO/git/gitconfig.work.example"; : > "$REPO/ai/rules.md"; printf 'test-wsl-config\n' > "$REPO/wsl/.wslconfig"
   for f in git_aliases.sh dev_aliases.sh jetbrains_path.sh bash_prompt.sh; do : > "$REPO/shell/$f"; done
   git init -q "$REPO"
+  cat > "$TMP/bin/cmd.exe" <<EOF
+#!/usr/bin/env bash
+printf '%s\\r\\n' '$TMP/windows'
+EOF
+  cat > "$TMP/bin/wslpath" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\n' "$1"
+EOF
+  chmod +x "$TMP/bin/cmd.exe" "$TMP/bin/wslpath"
 
   # Aucun WORKSPACE hérité : seul le défaut est testé
   unset WORKSPACE
-  if ! env HOME="$H" SHELL="${SHELL:-/bin/bash}" APPDATA=/nonexistent bash "$REPO/install.sh" > "$TMP/install.log" 2>&1; then
+  if ! env PATH="$TMP/bin:$PATH" HOME="$H" SHELL="${SHELL:-/bin/bash}" APPDATA=/nonexistent bash "$REPO/install.sh" > "$TMP/install.log" 2>&1; then
     cat "$TMP/install.log" >&2; fail "install.sh a échoué (HOME temporaire)"
   fi
   pass "install.sh exécuté dans HOME temporaire, sans WORKSPACE"
@@ -95,7 +104,7 @@ else
   H2="$TMP/home-override"
   W="$H2/custom-workspaces"
   mkdir -p "$H2"
-  if ! env HOME="$H2" WORKSPACE="$W" SHELL="${SHELL:-/bin/bash}" APPDATA=/nonexistent bash "$REPO/install.sh" > "$TMP/install-override.log" 2>&1; then
+  if ! env PATH="$TMP/bin:$PATH" HOME="$H2" WORKSPACE="$W" SHELL="${SHELL:-/bin/bash}" APPDATA=/nonexistent bash "$REPO/install.sh" > "$TMP/install-override.log" 2>&1; then
     cat "$TMP/install-override.log" >&2; fail "install.sh a échoué (WORKSPACE surchargé, HOME temporaire)"
   fi
   pass "install.sh exécuté avec WORKSPACE=<HOME>/custom-workspaces"
