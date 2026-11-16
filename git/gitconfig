@@ -1,50 +1,86 @@
 # Config git commune (mac + windows). Chargée via ~/.gitconfig par install.sh.
 # L'identité est dans gitconfig.perso (défaut) et ~/.gitconfig.work (dossier pro/).
+
 [init]
 	defaultBranch = main
 [push]
 	default = simple
 	autoSetupRemote = true
+
+# Pull : rebase par défaut pour un historique linéaire
 [pull]
 	rebase = true
+
+# Fetch : supprime les branches de suivi locales supprimées sur origin
 [fetch]
 	prune = true
+
+# Rerere : rejoue les résolutions de conflits précédentes automatiquement
 [rerere]
 	enabled = true
+
+# Corrections automatiques : active l'autocomplétion et correcteur orthographe pour les commandes
 [help]
 	autocorrect = 1
+
+# Couleurs : active la coloration syntaxique pour tous les éléments git
 [color]
 	branch = auto
 	diff = auto
 	interactive = auto
 	status = auto
 	ui = auto
+
+# Couleurs des branches : branche courante en vert, branches distantes en jaune
 [color "branch"]
 	current = green
 	remote = yellow
+
+# Alias : raccourcis pour les commandes git fréquentes
 [alias]
+	# Push sécurisé : refuse si la branche distante a changé, évite les pertes de données
+	pushf = push --force-with-lease --force-if-includes
 	co = checkout
+	# Status concis : affiche le statut sur une ligne avec tracking
 	st = status -sb
 	br = branch
 	ci = commit
 	fo = fetch origin
+	# Diff sans pagination : affiche immédiatement sans pager
 	d = !git --no-pager diff
+	# Difftool court : ouvre l'outil diff (IntelliJ)
 	dt = difftool
+	# Stat diff : voir les fichiers modifiés et les lignes changées
 	stat = !git --no-pager diff --stat
+	# Rebase interactif court : réorganiser les commits avant push
 	ri = rebase -i
+	# Graph log : visualise l'historique et les branches de manière lisible
 	lg = log --graph --oneline --decorate --all
+	# Blame amélioré : ignore les changements mineurs (espace, reformatage) pour trouver l'auteur réel
 	clean-blame = blame -w -C -C -C
+
+# Diff : utilise IntelliJ comme outil de comparaison
 [diff]
 	tool = intellij
+
+# Configuration de difftool : sans invite de confirmation
 [difftool]
 	prompt = false
+
+# Difftool IntelliJ : commande pour lancer la comparaison
 [difftool "intellij"]
 	cmd = idea diff \"$LOCAL\" \"$REMOTE\"
+
+# Merge : utilise IntelliJ comme outil de fusion
 [merge]
 	tool = intellij
+
+# Configuration de mergetool : sans invite et sans sauvegarde
 [mergetool]
 	prompt = false
 	keepBackup = false
+
+# Mergetool IntelliJ : commande pour lancer la fusion
 [mergetool "intellij"]
 	cmd = idea merge \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
 	trustExitCode = true
