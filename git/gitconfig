@@ -46,6 +46,12 @@
 	br = branch
 	ci = commit
 	fo = fetch origin
+	# Ajouter tous les fichiers modifiés au staging area
+	ds = diff --staged
+	# Gérer les diff : ajouter les fichiers modifiés et supprimés au staging area
+	adup = add -up 
+	# Réinitialiser partiellement : permet de réinitialiser des fichiers spécifiques
+	retp = reset -p
 	# Diff sans pagination : affiche immédiatement sans pager
 	d = !git --no-pager diff
 	# Difftool court : ouvre l'outil diff (IntelliJ)
