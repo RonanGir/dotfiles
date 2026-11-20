@@ -7,3 +7,6 @@ for p in zsh-syntax-highlighting zsh-autosuggestions; do
   done
 done
 unset _prefixes p d
+
+# Prompt starship (binaire MacPorts : /opt/local/bin/starship)
+command -v starship >/dev/null && eval "$(starship init zsh)"
